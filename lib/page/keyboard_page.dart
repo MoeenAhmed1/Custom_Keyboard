@@ -22,7 +22,8 @@ class _CustomKeyboardState extends State<CustomKeyboard> {
       appBar: AppBar(
         title: Text("custom keyboard"),
       ),
-      body: Container(
+      body:
+      Container(
 
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -76,61 +77,54 @@ Widget buildTextField()
   Widget buildKeypad()
   {
 
-    {
-      return Container(
-        color: Colors.black12,
-        child: Column(
-          children: [
-            buildList(),
-            Row(
-              children: [
+    return Container(
+      child: Column(
+        children: [
+          buildList(),
+          Table(
+            defaultColumnWidth: FixedColumnWidth(140.0),
+            border: TableBorder.all(
+                color: Colors.blue,
+                style: BorderStyle.solid,
+                width: 2),
+            children: [
+              TableRow( children: [
                 buildButton("1"),
                 buildButton("2"),
                 buildButton("3"),
-              ],
-            ),
-            Row(
-              children: [
+              ]),
+              TableRow( children: [
                 buildButton("4"),
                 buildButton("5"),
                 buildButton("6"),
-              ],
-            ),
-            Row(
-              children: [
+              ]),
+              TableRow( children: [
                 buildButton("7"),
                 buildButton("8"),
                 buildButton("9"),
-              ],
-            ),
-            Row(
-              children: [
+              ]),
+              TableRow( children: [
                 buildButton("<"),
                 buildButton("0"),
                 buildButton("<-"),
-              ],
-            )
-          ],
-        ),
-      );
-    }
-
+              ]),
+            ],
+          ),
+        ],
+      ),
+    );
   }
   Widget buildList()
   {
+
     String text=textController.text;
     List<Data> suggestions=[];
-
         {
       return BlocBuilder<DataCubit, DataState>(
         builder: (context, state) {
           context.read<DataCubit>().getDataList();
-
           if(state is DataLoaded) {
-
             suggestions=state.datalist.toList().where((element) => element.string.contains(RegExp(text))).toList();
-
-
             return Container(
               height: 50,
               color: Colors.black38,
@@ -175,33 +169,26 @@ Widget buildTextField()
   }
   Widget buildButton(String val)
   {
-    return Expanded(child: OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        side: BorderSide(width: 2,color: Colors.black38),
-      ),
-      child: Text("$val",
-        style:TextStyle(
-            fontSize: 25.0,
-            color: Colors.black54
-        ),
-      ),
+    return TextButton(
+         child: Text(val,
+           style:const TextStyle(
+               fontSize: 25.0,
+               color: Colors.black54
+           ),
+         ),
+      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.lightBlueAccent)),
+      onPressed:(){
+      if(val=="<-") {
+        _handleBackspace();
+      }
+      else if(val!="<")
+      {
+        _insertText(val);
+      }
 
-      onPressed: (){
-        if(val=="<-") {
-          _handleBackspace();
-        }
-        else if(val!="<")
-        {
-          _insertText(val);
-        }
-        else{
-          setState(() {
-            _readOnly = !_readOnly;
-          });
-        }
       },
-    )
     );
+
   }
   void _handleBackspace() {
 
@@ -219,5 +206,6 @@ Widget buildTextField()
       textController.selection = TextSelection.fromPosition(TextPosition(offset: textController.text.length));
     });
   }
+
 
 }
